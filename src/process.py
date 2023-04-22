@@ -104,13 +104,12 @@ def process_and_generate(
 
     prompt = opt["prompt"]
     negative = opt["negative"]
-    use_prompt_explorer = opt["use_prompt_explorer"]
     prompt_fragments = opt["prompt_fragments"]
     prompt_fragment_selects = opt["prompt_fragment_selects"]
 
-    if use_prompt_explorer:
-        prompt = prompt_explorer(prompt, prompt_fragments, prompt_fragment_selects)
-        negative = prompt_explorer(negative, prompt_fragments, prompt_fragment_selects)    
+    # do prompt explorer replacements
+    prompt = prompt_explorer(prompt, prompt_fragments, prompt_fragment_selects)
+    negative = prompt_explorer(negative, prompt_fragments, prompt_fragment_selects)    
 
     prompt_options = {
         "prompt": prompt,
