@@ -18,7 +18,7 @@ from src.utils import (
     free_ram
 )
 from PIL import Image, ImageFilter
-
+from src.promptexplorer import PromptFragment, CombineMethod, Direction, PromptFragments
 
 with open('src/resources/schedulers.json') as schedulerfile:
     scheduler_dict = json.load(schedulerfile)
@@ -72,6 +72,20 @@ def load_sampler(sampler_name: str, model_prediction_type: str, pipe: SimpleStab
     # "prediction_type": pipe_info["prediction_type"]
     # "program_version": "Simple Stable 2.0 (Gradio UI)" or "Simple Stable 2.0 (Notebook)"
 
+def prompt_explorer_tag(prompt, tag, fragments, num_select):
+  if prompt.find(tag):
+    if num_select == 0:
+      return prompt.replace(tag, "")
+    else:
+      split_fragments = fragments.split(", ")
+      select_fragments = random.sample(split_fragments, k=num_select)
+      replace = ", ".join(select_fragments)
+      return prompt.replace(tag, replace)
+
+def prompt_explorer(prompt: str, fragments: list, num_select: list):
+  for i in range(1, 8):
+    prompt = prompt_explorer_tag(prompt, f"<PE{i}>", fragments[i], num_select[i])
+  return prompt
 
 def process_and_generate(
         opt: dict,
@@ -88,9 +102,19 @@ def process_and_generate(
     if "tiling" in opt:
         tiling_type = "tiling" if opt["tiling"] else "original"
 
+    prompt = opt["prompt"]
+    negative = opt["negative"]
+    use_prompt_explorer = opt["use_prompt_explorer"]
+    prompt_fragments = opt["prompt_fragments"]
+    prompt_fragment_selects = opt["prompt_fragment_selects"]
+
+    if use_prompt_explorer:
+        prompt = prompt_explorer(prompt, prompt_fragments, prompt_fragment_selects)
+        negative = prompt_explorer(negative, prompt_fragments, prompt_fragment_selects)    
+
     prompt_options = {
-        "prompt": opt["prompt"],
-        "negative_prompt": None if opt["negative"] == "" else opt["negative"],
+        "prompt": prompt,
+        "negative_prompt": None if negative == "" else negative,
         "height": opt["H"],
         "width": opt["W"],
         "num_inference_steps": opt["steps"],
