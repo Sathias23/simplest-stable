@@ -4,7 +4,7 @@ import random
 
 def prompt_explorer_tag(prompt, tag, fragments, num_select):
   print(prompt)
-  if prompt.find(tag):
+  if tag in prompt:
     if num_select == 0:
       return prompt.replace(tag, "")
     else:
@@ -12,16 +12,18 @@ def prompt_explorer_tag(prompt, tag, fragments, num_select):
       select_fragments = random.sample(split_fragments, k=num_select)
       replace = ", ".join(select_fragments)
       return prompt.replace(tag, replace)
+  else:
+    return prompt
 
 def prompt_explorer(prompt: str, fragments: list, num_select: list):
   for i in range(len(fragments)):
     prompt = prompt_explorer_tag(prompt, f"<PE{i+1}>", fragments[i], num_select[i])
   return prompt
 
-teststring = "a <PE1> of a <PE2>"
-testfrag1 = "picture, movie, sound"
-testfrag2 = "cat, dog, bird"
+teststring = "<PE7>:1"
+testtag = "<PE1>"
+testfrag1 = " a distorted image of an abandoned mental asylum, a grainy video of a shadowy figure stalking through the woods, a glitchy photograph of a haunted doll, a cryptic message hidden within a corrupted file"
 testnum1 = 1
 testnum2 = 1
-newstring = prompt_explorer(teststring, [testfrag1, testfrag2], [testnum1, testnum2])
+newstring = prompt_explorer_tag(teststring, testtag, testfrag1, testnum1)   
 print(newstring)

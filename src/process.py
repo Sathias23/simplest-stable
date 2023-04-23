@@ -73,7 +73,8 @@ def load_sampler(sampler_name: str, model_prediction_type: str, pipe: SimpleStab
     # "program_version": "Simple Stable 2.0 (Gradio UI)" or "Simple Stable 2.0 (Notebook)"
 
 def prompt_explorer_tag(prompt, tag, fragments, num_select):
-  if prompt.find(tag):
+  print(prompt)
+  if tag in prompt:
     if num_select == 0:
       return prompt.replace(tag, "")
     else:
@@ -81,6 +82,8 @@ def prompt_explorer_tag(prompt, tag, fragments, num_select):
       select_fragments = random.sample(split_fragments, k=num_select)
       replace = ", ".join(select_fragments)
       return prompt.replace(tag, replace)
+  else:
+    return prompt
 
 def prompt_explorer(prompt: str, fragments: list, num_select: list):
   for i in range(len(fragments)):
