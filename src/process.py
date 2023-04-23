@@ -73,7 +73,6 @@ def load_sampler(sampler_name: str, model_prediction_type: str, pipe: SimpleStab
     # "program_version": "Simple Stable 2.0 (Gradio UI)" or "Simple Stable 2.0 (Notebook)"
 
 def prompt_explorer_tag(prompt, tag, fragments, num_select):
-  print(prompt)
   if tag in prompt:
     if num_select == 0:
       return prompt.replace(tag, "")
@@ -169,7 +168,8 @@ def process_and_generate(
             image, image_name, prompt_options, opt, seed, opt["outputs_folder"], opt["program_version"])
 
         if display_and_print:
-            print(prompt_options["prompt"])
+            print(f'Prompt: {prompt_options["prompt"]}')
+            print(f'Negative: {prompt_options["negative_prompt"]}')
             display(image)
 
         saved_image = image
