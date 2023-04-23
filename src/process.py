@@ -103,21 +103,11 @@ def process_and_generate(
     pipe = load_sampler(opt["sampler"], opt["prediction_type"], pipe)
 
     if "tiling" in opt:
-        tiling_type = "tiling" if opt["tiling"] else "original"
-
-    prompt = opt["prompt"]
-    negative = opt["negative"]
-    prompt_fragments = opt["prompt_fragments"]
-    print(prompt_fragments)
-    prompt_fragment_selects = opt["prompt_fragment_selects"]
-
-    # do prompt explorer replacements
-    prompt = prompt_explorer(prompt, prompt_fragments, prompt_fragment_selects)
-    negative = prompt_explorer(negative, prompt_fragments, prompt_fragment_selects)    
+        tiling_type = "tiling" if opt["tiling"] else "original" 
 
     prompt_options = {
-        "prompt": prompt,
-        "negative_prompt": None if negative == "" else negative,
+        "prompt": opt["prompt"],
+        "negative_prompt": None if opt["negative"] == "" else opt["negative"],
         "height": opt["H"],
         "width": opt["W"],
         "num_inference_steps": opt["steps"],
@@ -168,6 +158,9 @@ def process_and_generate(
         else:
             prompt_options["negative_prompt"] = process_prompt_and_add_keyword(
                 "", opt["negative_keyword"] if opt["add_keyword"] else None, randomizer)
+        # do prompt explorer replacements
+        prompt_options["prompt"] = prompt_explorer(opt["prompt"], opt["prompt_fragments"], opt["prompt_fragment_selects"])
+        prompt_options["negative_prompt"] = prompt_explorer(opt["negative"], opt["prompt_fragments"], opt["prompt_fragment_selects"])
 
         image = pipe(**prompt_options).images[0]
         image_name = f"{batch_name}_{seed}_{index}"
