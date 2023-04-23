@@ -83,8 +83,8 @@ def prompt_explorer_tag(prompt, tag, fragments, num_select):
       return prompt.replace(tag, replace)
 
 def prompt_explorer(prompt: str, fragments: list, num_select: list):
-  for i in range(1, 8):
-    prompt = prompt_explorer_tag(prompt, f"<PE{i}>", fragments[i], num_select[i])
+  for i in range(len(fragments)):
+    prompt = prompt_explorer_tag(prompt, f"<PE{i+1}>", fragments[i], num_select[i])
   return prompt
 
 def process_and_generate(
@@ -105,6 +105,7 @@ def process_and_generate(
     prompt = opt["prompt"]
     negative = opt["negative"]
     prompt_fragments = opt["prompt_fragments"]
+    print(prompt_fragments)
     prompt_fragment_selects = opt["prompt_fragment_selects"]
 
     # do prompt explorer replacements
